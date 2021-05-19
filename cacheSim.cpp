@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include "cacheSim.h"
 
 using std::FILE;
 using std::string;
@@ -22,7 +23,6 @@ int main(int argc, char **argv) {
 	}
 
 	// Get input arguments
-
 	// File
 	// Assuming it is the first argument
 	char* fileString = argv[1];
@@ -63,6 +63,8 @@ int main(int argc, char **argv) {
 		}
 	}
 
+    CacheControl OurCache (MemCyc, L1Size,L2Size, BSize, L1Assoc, L2Assoc, L1Cyc, L2Cyc, WrAlloc);
+
 	while (getline(file, line)) {
 
 		stringstream ss(line);
@@ -75,24 +77,42 @@ int main(int argc, char **argv) {
 		}
 
 		// DEBUG - remove this line
-		cout << "operation: " << operation;
+	//	cout << "operation: " << operation;
 
 		string cutAddress = address.substr(2); // Removing the "0x" part of the address
 
 		// DEBUG - remove this line
-		cout << ", address (hex)" << cutAddress;
+	//	cout << ", address (hex)" << cutAddress;
 
 		unsigned long int num = 0;
 		num = strtoul(cutAddress.c_str(), NULL, 16);
 
+
 		// DEBUG - remove this line
-		cout << " (dec) " << num << endl;
+	//	cout << " (dec) " << num << endl;
+		
+        if (operation == 'r')
+        {	
+			//std::cout<<std::endl;
+			//std::cout<<"reading "<<num<<std::endl;
+            OurCache.Read(num);
+        }
+        else if (operation == 'w')
+        {	//std::cout<<std::endl;
+		//	std::cout<<"writing "<<num<<std::endl;
+            OurCache.Write(num);
+        }
 
 	}
 
 	double L1MissRate;
 	double L2MissRate;
 	double avgAccTime;
+
+	//Stats stats;
+	L1MissRate = OurCache.L1Stats();
+    L2MissRate = OurCache.L2Stats();
+    avgAccTime = OurCache.AvgAccTime();
 
 	printf("L1miss=%.03f ", L1MissRate);
 	printf("L2miss=%.03f ", L2MissRate);

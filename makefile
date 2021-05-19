@@ -1,7 +1,15 @@
 # 046267 Computer Architecture - Spring 2020 - HW #2
 
-cacheSim: cacheSim.cpp
-	g++ -o cacheSim cacheSim.cpp
+# Environment for C++ 
+CXX = g++
+CXXFLAGS = -std=c++11 -Wall
+CCLINK = $(CXX)
+OBJS = cacheSim.o
+#RM = rm -f
+cacheSim: $(OBJS)
+	$(CCLINK) -o cacheSim $(OBJS)
+
+cacheSim.o : cacheSim.cpp cacheSim.h
 
 .PHONY: clean
 clean:
